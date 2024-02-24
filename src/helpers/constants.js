@@ -30,3 +30,5 @@ export const options = [
 export const phoneNumberMask = {
   mask: "+{7} (000) 000-00-00",
 };
+
+export const errorMessage = "Поле является обязательным";

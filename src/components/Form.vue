@@ -67,7 +67,7 @@ import {
     helpers,
     email,
 } from "@vuelidate/validators";
-import { options, phoneNumberMask } from '../helpers/constants';
+import { options, phoneNumberMask, errorMessage } from '../helpers/constants';
 
 const form = ref({
     name: "",
@@ -88,7 +88,7 @@ const rules = computed(() => {
     const localRules = {
         name: {
             $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
+            required: helpers.withMessage(errorMessage, required),
             minLength: helpers.withMessage(
                 "Минимальная длина имени - 2 символа",
                 minLength(2)
@@ -101,12 +101,12 @@ const rules = computed(() => {
 
         phone: {
             $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
+            required: helpers.withMessage(errorMessage, required),
         },
 
         email: {
             $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
+            required: helpers.withMessage(errorMessage, required),
             email: helpers.withMessage("Некорректный e-mail", email),
         },
     };
