@@ -1,20 +1,20 @@
 import { createStore } from "vuex";
 import axios from "axios";
+import { API_BASE } from "../helpers/constants";
 
 export default createStore({
   state: {
-    isShow: false,
+    isFormShow: false,
     isErrorShow: false,
     isSuccessShow: false,
-    isSelectCity: "Москва",
-    request: "",
-    error: "",
-    isOrderRequestLoading: false,
+    isSelectCity: "",
+    isRequest: "",
+    isError: "",
   },
 
   actions: {
-    toggleModal(context) {
-      context.commit("TOGGLE_MODAL");
+    toggleFormModal(context) {
+      context.commit("TOGGLE_FORM_MODAL");
     },
 
     toggleErrorModal(context) {
@@ -31,27 +31,22 @@ export default createStore({
 
     async sendOrderRequest({ state, commit }, orderData) {
       try {
-        commit("SET_LODING", true);
-        const response = await axios.post(
-          "http://hh.autodrive-agency.ru/test-tasks/front/task-7/",
-          orderData
-        );
+        const response = await axios.post(API_BASE, orderData);
         commit("SEND_ORDER_REQUEST", response.data);
         commit("TOGGLE_SUCCESS_MODAL");
       } catch (e) {
-        const error = e?.response?.data ? e?.response?.data : e.message;
+        const error = e?.response?.data ? e.response.data : e.message;
         commit("REQUEST_ERROR", error);
         commit("TOGGLE_ERROR_MODAL");
       } finally {
-        commit("SET_LODING", false);
-        commit("TOGGLE_MODAL");
+        commit("TOGGLE_FORM_MODAL");
       }
     },
   },
 
   mutations: {
-    TOGGLE_MODAL(state) {
-      state.isShow = !state.isShow;
+    TOGGLE_FORM_MODAL(state) {
+      state.isFormShow = !state.isFormShow;
     },
 
     TOGGLE_ERROR_MODAL(state) {
@@ -67,15 +62,11 @@ export default createStore({
     },
 
     SEND_ORDER_REQUEST(state, request) {
-      state.request = request;
+      state.isRequest = request;
     },
 
     REQUEST_ERROR(state, error) {
-      state.error = error;
-    },
-
-    SET_LODING(state, bool) {
-      state.isOrderRequestLoading = bool;
+      state.isError = error;
     },
   },
 
@@ -84,8 +75,8 @@ export default createStore({
       return state.isSelectCity;
     },
 
-    getShow(state) {
-      return state.isShow;
+    getFormShow(state) {
+      return state.isFormShow;
     },
 
     getErrorShow(state) {
@@ -97,15 +88,11 @@ export default createStore({
     },
 
     getRequest(state) {
-      return state.request;
+      return state.isRequest;
     },
 
     getError(state) {
-      return state.error;
-    },
-
-    getloadingStatus(state) {
-      return state.isOrderRequestLoading;
+      return state.isError;
     },
   },
 });

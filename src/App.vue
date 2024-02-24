@@ -4,15 +4,15 @@
       <Button city="moscow" />
       <Button city="petersburg" />
     </div>
-    <Modal/>
-    <ErrorModal />
+    <FormModal />
     <SuccessModal />
+    <ErrorModal />
   </div>
 </template>
 
 <script setup>
 import Button from './components/Button.vue';
-import Modal from './components/Modal.vue';
+import FormModal from './components/FormModal.vue';
 import ErrorModal from './components/ErrorModal.vue';
 import SuccessModal from './components/SuccessModal.vue';
 </script>

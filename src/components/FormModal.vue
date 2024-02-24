@@ -1,179 +1,37 @@
 <template>
-    <form @submit.prevent="submitForm" class="space-y-4" action="#">
-        <div>
-            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Ваше имя
-            </label>
-            <input v-model="form.name" type="text" name="name" id="name" placeholder="Введите Имя"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
-            <div class="h-2 text-rose-600">
-                <div v-for="(error, index) of v$.name.$errors" :key="index">
-                    <p class="">{{ error.$message }}</p>
+    <div v-if="show"
+        class="modal h-screen w-full fixed left-0 top-0 flex justify-center items-center bg-black bg-opacity-50">
+        <div class="relative p-4 w-full max-w-md max-h-full">
+            <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+                <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+                    <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        Заполните форму заказа
+                    </h3>
+                    <button @click="closeModal" type="button"
+                        class="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                        data-modal-hide="authentication-modal">
+                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 14 14">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="p-4 md:p-5">
+                    <Form />
                 </div>
             </div>
         </div>
-        <div>
-            <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Номер телефона
-            </label>
-            <input v-model="form.phone" v-imask="phoneNumberMask" placeholder="+7 (921) 123-45-67" @keypress="isNumber"
-                @accept="onAccept" @complete="onComplete" maxlength="18" type="tel" name="phone" id="phone"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" />
-
-            <div class="h-2 text-rose-600">
-                <div v-for="(error, index) of v$.phone.$errors" :key="index">
-                    <p class="">{{ error.$message }}</p>
-                </div>
-            </div>
-        </div>
-        <div>
-            <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Адрес электронной почты
-            </label>
-            <input v-model="form.email" type="email" name="email" id="email"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
-                placeholder="name@company.com" />
-
-            <div class="h-2 text-rose-600">
-                <div v-for="(error, index) of v$.email.$errors" :key="index">
-                    <p class="">{{ error.$message }}</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-span-2 sm:col-span-1">
-            <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Город</label>
-            <select v-model="form.selectCity" id="category"
-                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-                <option v-for="option in options" :key="option.id" :value="option.name">
-                    {{ option.name }}
-                </option>
-            </select>
-        </div>
-        <button type="submit"
-            class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Отправить
-        </button>
-    </form>
+    </div>
 </template>
   
 <script setup>
-import { computed, ref } from 'vue';
+import { computed } from 'vue';
 import { useStore } from "vuex";
-import useVuelidate from "@vuelidate/core";
-import {
-    required,
-    minLength,
-    maxLength,
-    helpers,
-    email,
-} from "@vuelidate/validators";
+import Form from './Form.vue';
 
 const store = useStore();
-
-const selectCity = computed(() => store.getters.getSelectCity);
-
-const form = ref({
-    name: "",
-    phone: "",
-    email: "",
-    selectCity: selectCity.value,
-});
-
-const options = ref([{
-    id: 1,
-    name: "Москва"
-},
-{
-    id: 2,
-    name: "Санкт-Петербург"
-},
-{
-    id: 3,
-    name: "Казань"
-}
-]);
-
-const phoneNumberMask = {
-    mask: '+{7} (000) 000-00-00'
-};
-
-const onAccept = (e) => {
-    const maskRef = e.detail;
-    form.phone = maskRef.value;
-};
-
-const onComplete = (e) => {
-    const maskRef = e.detail;
-    form.completePhone = maskRef.unmaskedValue;
-    console.log('complete', maskRef.unmaskedValue);
-};
-
-const isNumber = (e) => {
-    const regex = /[0-9]/
-
-    if (!regex.test(e.key)) {
-        e.returnValue = false;
-        if (e.preventDefault) e.preventDefault();
-    }
-};
-
-const convertNumberformat = (str) => {
-    const regex = /\d+/g;
-    return "+" + str.match(regex).join('')
-};
-
-const getOptionId = (name) => {
-    return options.value.find(option => option.name === name).id
-};
-
-const rules = computed(() => {
-    const localRules = {
-        name: {
-            $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
-            minLength: helpers.withMessage(
-                "Минимальная длина имени - 2 символа",
-                minLength(2)
-            ),
-            maxLength: helpers.withMessage(
-                "Максимальная длина имени - 30 символов",
-                maxLength(30)
-            ),
-        },
-
-        phone: {
-            $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
-            minLength: helpers.withMessage(
-                "Недостаточное количество символов",
-                minLength(18)
-            ),
-        },
-
-        email: {
-            $autoDirty: true,
-            required: helpers.withMessage("Поле является обязательным", required),
-            email: helpers.withMessage("Некорректный e-mail", email),
-        },
-    };
-    return localRules;
-});
-
-const v$ = useVuelidate(rules, form);
-
-const submitForm = async () => {
-    const isFormCorrect = await v$.value.$validate();
-    if (!isFormCorrect) return;
-
-    const { name, phone, email, selectCity } = form.value;
-    const orderData = {
-        name: name,
-        phone: convertNumberformat(phone),
-        email: email,
-        city_id: getOptionId(selectCity),
-    }
-
-    store.dispatch("sendOrderRequest", orderData)
-};
+const show = computed(() => store.getters.getFormShow);
+const closeModal = () => store.dispatch("toggleFormModal");
 </script>
   

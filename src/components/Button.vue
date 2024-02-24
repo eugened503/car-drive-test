@@ -8,6 +8,7 @@
 
 <script setup>
 import { useStore } from "vuex";
+import { mapCity } from "../helpers/constants";
 
 const props = defineProps({
   city: String,
@@ -15,20 +16,9 @@ const props = defineProps({
 
 const store = useStore();
 
-const mapCity = {
-  moscow: {
-    name: 'Заказать в Москву',
-    selectName: 'Москва'
-  },
-  petersburg: {
-    name: 'Заказать в Санкт-Петербург',
-    selectName: 'Санкт-Петербург'
-  }
-};
-
 const handleShowModal = () => {
   const { city } = props;
-  store.dispatch("toggleModal");
+  store.dispatch("toggleFormModal");
   store.dispatch("selectCity", mapCity[city].selectName);
 };
 </script>
