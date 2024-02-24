@@ -125,9 +125,9 @@ const submitForm = async () => {
         phone: convertNumberformat(phone),
         email: email,
         city_id: getOptionId(selectCity),
-    }
+    };
 
-    store.dispatch("sendOrderRequest", orderData)
+    store.dispatch("sendOrderRequest", orderData);
 };
 
 const onAccept = (e) => {
@@ -136,7 +136,7 @@ const onAccept = (e) => {
 };
 
 const isNumber = (e) => {
-    const regex = /[0-9]/
+    const regex = /[0-9]/;
 
     if (!regex.test(e.key)) {
         e.returnValue = false;
@@ -146,11 +146,11 @@ const isNumber = (e) => {
 
 const convertNumberformat = (str) => {
     const regex = /\d+/g;
-    return "+" + str.match(regex).join('')
+    return "+" + str.match(regex).join('');
 };
 
 const getOptionId = (name) => {
-    return options.find(option => option.name === name).id
+    return options.find(option => option.name === name).id;
 };
 
 const getSelectCity = () => {
