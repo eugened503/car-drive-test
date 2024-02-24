@@ -102,10 +102,6 @@ const rules = computed(() => {
         phone: {
             $autoDirty: true,
             required: helpers.withMessage("Поле является обязательным", required),
-            minLength: helpers.withMessage(
-                "Недостаточное количество символов",
-                minLength(18)
-            ),
         },
 
         email: {
